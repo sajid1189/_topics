@@ -7,13 +7,13 @@ from iterators import my_range
 
 
 def time_logger(func):
-
     def inner(*args, **kwargs):
         logging.basicConfig(filename='{}.{}.log'.format(func.__module__, func.__name__), level=logging.DEBUG)
         start = time.time()
         func(*args, **kwargs)
         end = time.time()
-        logging.debug("{}: func {} started at {} and took {}".format(datetime.datetime.now(), func.__name__, start, end - start))
+        logging.debug(
+            "{}: func {} started at {} and took {}".format(datetime.datetime.now(), func.__name__, start, end - start))
 
     return inner
 
@@ -28,6 +28,22 @@ def timer(steps):
         time.sleep(.1)
 
 
+class BottleNeckDetector:
+    def __init__(self, original_func):
+        self.original_func = original_func
+
+    def __call__(self, *args, **kwargs):
+        logging.basicConfig(filename='{}.{}.log'.format(
+            self.original_func .__module__,
+            self.original_func.__name__),
+            level=logging.DEBUG
+        )
+        start = time.time()
+        self.original_func(*args, **kwargs)
+        end = time.time()
+        logging.debug(
+            "{}: func {} started at {} and took {}".format(datetime.datetime.now(), self.original_func.__name__, start, end - start))
+        # return result
 # my_square_root = time_logger(my_square_root)
 # my_square_root(10000)
 #
